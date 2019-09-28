@@ -1,0 +1,12 @@
+# vscode settings
+.vscode/
+
+# python artifacts
+**/*.py[abc]
+**/__pycache__
+
+# application secrets
+**/config.json
+
+# pytest artifacts
+**/.pytest_cache

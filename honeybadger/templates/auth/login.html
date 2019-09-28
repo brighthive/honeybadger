@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="text-center">
+        <img src="{{ url_for('static', filename='images/brighthive_FullColor-2019-InterimLogo-IconText-Horizonal-web-header-3.png')}}"
+            class="img-fluid" alt="BH Interim logo" style="width:15%;height:auto" />
+    </div>
+    <h2 class="text-center">Honey Badger</h2>
+    <p class="text-center">
+        A simple reference application for consuming BrightHive Data Resources.
+    </p>
+    <p class="text-center">
+        <small class="text-muted">
+            <strong>Disclaimer:</strong> This tool is not intended to be a production application and should never be
+            used
+            as one. It is solely intended to
+            be a reference application for how BrightHive Data Trust APIs can be consumed.
+        </small>
+    </p>
+    <div class="row">
+        <div class="col text-center">
+            <a class="btn btn-default btn-dark btn-lg"
+                href="https://github.com/login/oauth/authorize?scope=user:email&client_id=4ba0f8ed78348d9ce3e2"><span
+                    class="fa fa-github">&nbsp;</span>Log in with
+                GitHub</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

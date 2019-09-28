@@ -1,0 +1,38 @@
+{
+    "development": {
+        "data_trust": {
+            "mci_url": "MCI_URL",
+            "data_resources_url": "DATA_RESOURCE_URL"
+        },
+        "auth": {
+            "client_id": "CLIENT_ID",
+            "client_secret": "CLIENT_SECRET",
+            "oauth2_url": "OAUTH2_URL",
+            "audience": "AUDIENCE"
+        },
+        "github": {
+            "client_id": "CLIENT_ID",
+            "client_secret": "CLIENT_SECRET",
+            "oauth2_url": "OAUTH2_URL",
+            "profile_url": "PROFILE_URL"
+        }
+    },
+    "testing": {
+        "data_trust": {
+            "mci_url": "MCI_URL",
+            "data_resources_url": "DATA_RESOURCE_URL"
+        },
+        "auth": {
+            "client_id": "CLIENT_ID",
+            "client_secret": "CLIENT_SECRET",
+            "oauth2_url": "OAUTH2_URL",
+            "audience": "AUDIENCE"
+        },
+        "github": {
+            "client_id": "CLIENT_ID",
+            "client_secret": "CLIENT_SECRET",
+            "oauth2_url": "OAUTH2_URL",
+            "profile_url": "PROFILE_URL"
+        }
+    }
+}

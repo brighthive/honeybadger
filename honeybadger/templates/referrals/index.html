@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination pagination-sm flex-sm-wrap">
+    </ul>
+</nav>
+<h4>Referrals for <a href="{{url_for('mci.users', id=referrals[0].mci_id)}}">Jane Doe</a></h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">MCI ID</th>
+            <th scope="col">Source Provider</th>
+            <th scope="col">Destination Provider</th>
+            <th scope="col">Program</th>
+            <th scope="col">Recommended Date</th>
+            <th scope="col">Accepted Date</th>
+            <th scope="col">Completed Date</th>
+            <th scope="col">Serviced Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for referral in referrals%}
+        <tr>
+            <th scope="row"><a href="{{url_for('mci.users', id=referral.mci_id)}}">{{referral.id}}</a></th>
+            <th scope="row"><a href="{{url_for('mci.users', id=referral.mci_id)}}">{{referral.mci_id[-6:]}}</a></th>
+            <td>{{referral.source_provider_id}}</td>
+            <td>{{referral.destination_provider_id}}</td>
+            <td>{{referral.program_id}}</td>
+            <td>{{referral.recommended_date}}</td>
+            <td>{{referral.accepted_date}}</td>
+            <td>{{referral.completed_date}}</td>
+            <td>{{referral.serviced_date}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<h5>JSON Output</h5>
+<p>{{referrals}}</p>
+{% endblock %}
