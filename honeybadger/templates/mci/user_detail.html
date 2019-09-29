@@ -1,159 +1,127 @@
-{% extends 'base.html' %}
-{% block content %}
-<form>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="mci_id">MCI ID</label>
-            <input type="text" class="form-control" id="mci_id" value="{{user.mci_id if mode.upper() == 'EDIT'}}"
-                readonly>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="vendor_id">Vendor ID</label>
-            <input type="text" class="form-control" id="vendor_id" value="{{user.vendor_id if mode.upper() == 'EDIT'}}">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-3">
-            <label for="first_name">First Name</label>
-            <input type="text" class="form-control" id="first_name"
-                value="{{user.first_name if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-3">
-            <label for="middle_name">Middle Name</label>
-            <input type="text" class="form-control" id="middle_name"
-                value="{{user.middle_name if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-3">
-            <label for="last_name">Last Name</label>
-            <input type="text" class="form-control" id="last_name" value="{{user.last_name if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-3">
-            <label for="suffix">Suffix</label>
-            <input type="text" class="form-control" id="suffix" value="{{user.suffix if mode.upper() == 'EDIT'}}">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="suffix">Date of Birth</label>
-            <input type="date" class="form-control" id="suffix"
-                value="{{user.date_of_birth if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="inputState">Gender</label>
-            <select id="inputState" class="form-control">
-                {% if genders %}
-                {% for gender in genders %}
-                {% if mode.upper() == 'EDIT' and user.gender == gender.gender %}
-                <option value="{{gender.gender}}" selected>{{gender.gender}}</option>
-                {% else %}
-                <option value="{{gender.gender}}">{{gender.gender}}</option>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-            </select>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="inputfoo">Ethincity/Race</label>
-        <select class="custom-select" multiple size="{{ethnicity_count}}">
-            {% if ethnicities %}
-            {% for ethnicity in ethnicities %}
-            {% if mode.upper() == 'EDIT' and ethnicity.ethnicity_Race in user.ethnicity_race %}
-            <option value="ethnicity.ethnicity_Race" selected>{{ethnicity.ethnicity_Race}}</option>
-            {% else %}
-            <option value="ethnicity.ethnicity_Race">{{ethnicity.ethnicity_Race}}</option>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="address">Address</label>
-        <input type="text" class="form-control" id="inputAddress"
-            value="{{user.mailing_address.address if mode.upper() == 'EDIT'}}">
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="city">City</label>
-            <input type="text" class="form-control" id="city"
-                value="{{user.mailing_address.city if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-2">
-            <label for="inputState">State</label>
-            <select id="inputState" class="form-control">
-                <option>CO</option>
-                <option selected>VA</option>
-            </select>
-        </div>
-        <div class="form-group col-md-2">
-            <label for="inputZip">Postal Code</label>
-            <input type="text" class="form-control" id="inputZip"
-                value="{{user.mailing_address.postal_code if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-2">
-            <label for="inputZip">Country</label>
-            <input type="text" class="form-control" id="inputZip"
-                value="{{user.mailing_address.country if mode.upper() == 'EDIT'}}">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="inputZip">Email Address</label>
-            <input type="email" class="form-control" id="inputZip"
-                value="{{user.email_address if mode.upper() == 'EDIT'}}">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="inputZip">Telephone</label>
-            <input type="text" class="form-control" id="inputZip" value="{{user.telephone if mode.upper() == 'EDIT'}}">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="inputState">Education Level</label>
-            <select id="inputState" class="form-control">
-                {% if education_levels %}
-                {% for education_level in education_levels %}
-                {% if mode.upper() == 'EDIT' and user.education_level == education_level.education_level %}
-                <option value="{{education_level.education_level}}" selected>{{education_level.education_level}}
-                </option>
-                {% else %}
-                <option value="{{education_level.education_level}}">{{education_level.education_level}}</option>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-            </select>
-        </div>
-        <div class="form-group col-md-4">
-            <label for="inputState">Employment Status</label>
-            <select id="inputState" class="form-control">
-                {% if employment_status %}
-                {% for status in employment_status %}
-                {% if mode.upper() == 'EDIT' and user.employment_status == status.employment_status %}
-                <option value="{{status.employment_status}}" selected>{{status.employment_status}}
-                </option>
-                {% else %}
-                <option value="{{status.employment_status}}">{{status.employment_status}}</option>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-            </select>
-        </div>
-        <div class="form-group col-md-4">
-            <label for="inputState">Source</label>
-            <select id="inputState" class="form-control">
-                {% if providers %}
-                {% for provider in providers %}
-                {% if mode.upper() == 'EDIT' and user.source == provider.provider_name %}
-                <option value="{{provider.provider_name}}" selected>{{provider.provider_name}}
-                </option>
-                {% else %}
-                <option value="{{provider.provider_name}}">{{provider.provider_name}}</option>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-            </select>
+<div class="modal fade" id="mci-form-modal">
+    <div class="modal-dialog mw-100 w-75">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="mci-form">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="mci-id">MCI ID</label>
+                            <input type="text" class="form-control form-control-sm" id="mci-id" readonly>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="registration-date">Registration
+                                Date</label>
+                            <input type="date" class="form-control form-control-sm" id="registration-date" readonly>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="vendor-id">Vendor ID</label>
+                            <input type="text" class="form-control form-control-sm" id="vendor-id">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label class="col-form-label col-form-label-sm" for="first-name">First Name</label>
+                            <input type="text" class="form-control form-control-sm" id="first-name" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="col-form-label col-form-label-sm" for="middle-name">Middle Name</label>
+                            <input type="text" class="form-control form-control-sm" id="middle-name">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="col-form-label col-form-label-sm" for="last-name">Last Name</label>
+                            <input type="text" class="form-control form-control-sm" id="last-name" required>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <label class="col-form-label col-form-label-sm" for="suffix">Suffix</label>
+                            <input type="text" class="form-control form-control-sm" id="suffix">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="col-form-label col-form-label-sm" for="date-of-birth">Date of Birth</label>
+                            <input type="date" class="form-control form-control-sm" id="date-of-birth">
+                        </div>
+                        <div class="form-group col-md-1">
+                            <label class="col-form-label col-form-label-sm" for="gender">Gender</label>
+                            <select id="gender" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-form-label-sm" for="ethnicity-race">Ethincity/Race</label>
+                        <select class="custom-select custom-select-sm" multiple id="ethnicity-race">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-form-label-sm" for="address">Address</label>
+                        <input type="text" class="form-control form-control-sm" id="address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label class="col-form-label col-form-label-sm" for="city">City</label>
+                            <input type="text" class="form-control form-control-sm" id="city">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="col-form-label col-form-label-sm" for="state">State</label>
+                            <select id="state" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="col-form-label col-form-label-sm" for="postal-code">Postal Code</label>
+                            <input type="text" class="form-control form-control-sm" id="postal-code">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="col-form-label col-form-label-sm" for="country">Country</label>
+                            <select id="country" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label class="col-form-label col-form-label-sm" for="email-address">Email Address</label>
+                            <input type="email" class="form-control form-control-sm" id="email-address" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-form-label col-form-label-sm" for="telephone">Telephone</label>
+                            <input type="text" class="form-control form-control-sm" id="telephone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="education-level">Education
+                                Level</label>
+                            <select id="education-level" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="employment-status">Employment
+                                Status</label>
+                            <select id="employment-status" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="provider">Source</label>
+                            <select id="provider" class="form-control form-control-sm">
+                                <option value="">---</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" id="create-buttons">
+                        <div class="col-md-3 offset-md-3">
+                            <button class="btn btn-block btn-success" id="clear-user-form">Clear Form</button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-block btn-primary" id="save-user">Save User</button>
+                        </div>
+                    </div>
+                    <div class="row" id="edit-buttons">
+                        <div class="col-md-6 offset-md-3">
+                            <button class="btn btn-block btn-secondary" id="clear-user-form">Find Referrals</button>
+                        </div>
+                        <!-- <div class="col-md-3">
+                            <button class="btn btn-block btn-primary">Update User</button>
+                        </div> -->
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    <a class="btn btn-success" href="{{url_for('referrals.get_referrals', id=user.mci_id)}}">Find Referrals</a>
-</form>
-{% endblock %}
+</div>

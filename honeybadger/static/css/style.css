@@ -85,6 +85,19 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
 
+
+.bd-spinner-modal-lg .modal-dialog{
+  display: table;
+  position: relative;
+  margin: 0 auto;
+  top: calc(50% - 24px);
+}
+
+.bd-spinner-modal-lg .modal-dialog .modal-content{
+  background-color: transparent;
+  border: none;
+}
+
 /*
  * Utilities
  */

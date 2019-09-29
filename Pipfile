@@ -14,6 +14,7 @@ pytest-cov = "*"
 flask = "*"
 gunicorn = "*"
 requests = "*"
+gevent = "*"
 
 [requires]
 python_version = "3.7"

@@ -11,10 +11,22 @@ bp = Blueprint('referrals', __name__, url_prefix='/referrals')
 config = ConfigurationFactory.from_env()
 
 
+@bp.route('/', methods=['GET'])
+@login_required
+def index():
+    query = '{}/referrals'.format(config.data_resources_url)
+    referrals = secure_get(query, 'referrals')
+    return render_template('referrals/index.html', referrals=referrals, page=1, limit=20, page_count=20)
+
+
 @bp.route('/<string:id>', methods=['GET'])
 @login_required
-def get_referrals(id: str):
-    query = '{}/referrals/query'.format(config.data_resources_url)
-    data = {'mci_id': id}
-    referrals = secure_post(query, data, 'results')
-    return render_template('referrals/index.html', referrals=referrals)
+def get_referrals(id):
+    if id:
+        query = '{}/referrals/query'.format(config.data_resources_url)
+        data = {'mci_id': id}
+        referrals = secure_post(query, data, 'results')
+    else:
+        query = '{}/referrals'
+        referrals = secure_get(query, 'results')
+    return render_template('referrals/index.html', referrals=referrals, page=1)

@@ -2,18 +2,57 @@
 {% block content %}
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm flex-sm-wrap">
-        {% for i in range (0, 10 + 1) %}
-        <li class="page-item"><a class="page-link"
-                href="{{url_for('mci.index', offset=limit * i, limit=limit)}}">{{i + 1}}</a>
+        {% if page > 1 %}
+        <li class="page-item">
+            {% else %}
+        <li class="page-item disabled">
+            {% endif %}
+            <a class="page-link" href="{{url_for('mci.index', offset=0, limit=limit)}}" aria-label="First">
+                <span aria-hidden="true">&lsaquo;</span>
+                <span class="sr-only">First</span>
+            </a>
         </li>
-        {% endfor %}
-        <!-- {% for i in range (page_count - 5 , page_count + 1) %}
-        <li class="page-item"><a class="page-link"
-                href="{{url_for('mci.index', offset=limit * i, limit=limit)}}">{{i + 1}}</a>
+        {% if page > 1 %}
+        <li class="page-item">
+            {% else %}
+        <li class="page-item disabled">
+            {% endif %}
+            <a class="page-link" href="{{url_for('mci.index', offset=(limit * page) - 2 * limit, limit=limit)}}"
+                aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
         </li>
-        {% endfor %} -->
+        <li class="page-item disabled">
+            <a class="page-link" href="#">{{page}}/{{page_count + 1}}</a>
+        </li>
+        {% if page <= page_count %}
+        <li class="page-item">
+            {% else %}
+        <li class="page-item disabled">
+            {% endif %}
+            <a class="page-link" href="{{url_for('mci.index', offset=(limit * page), limit=limit)}}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+        {% if page <= page_count %}
+        <li class="page-item">
+            {% else %}
+        <li class="page-item disabled">
+            {% endif %}
+            <a class="page-link" href="{{url_for('mci.index', offset=(limit * page_count), limit=limit)}}"
+                aria-label="Last">
+                <span aria-hidden="true">&rsaquo;</span>
+                <span class="sr-only">Last</span>
+            </a>
+        </li>
     </ul>
 </nav>
+
+<div style="padding:5px 0px 5px 0px;">
+    <button class="btn btn-sm btn-success" id="add-user"><span class="fa fa-plus">&nbsp;</span>Add User</button>
+</div>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -25,198 +64,15 @@
     <tbody>
         {% for user in users%}
         <tr>
-            <th scope="row"><a href="{{url_for('mci.users', id=user.mci_id)}}">{{user.mci_id[-6:]}}</a></th>
-            <td><a href="#" data-toggle="modal" data-target="#myModal">{{user.first_name}}</a></td>
-            <td>{{user.last_name}} {% if user.suffix %}{{user.suffix}}{% endif %}</td>
+            <th scope="row"><a href="{{url_for('mci.users', id=user.mci_id)}}"
+                    class="user-detail">{{user.mci_id[-6:]}}</a></th>
+            <td>{{user.first_name}}</td>
+            <td>{{user.last_name}} {{ user.suffix if user.suffix }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog mw-100 w-75">
-        <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Modal Heading</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <form>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="mci_id">MCI ID</label>
-                            <input type="text" class="form-control" id="mci_id"
-                                value="{{user.mci_id if mode.upper() == 'EDIT'}}" readonly>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="vendor_id">Vendor ID</label>
-                            <input type="text" class="form-control" id="vendor_id"
-                                value="{{user.vendor_id if mode.upper() == 'EDIT'}}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="first_name">First Name</label>
-                            <input type="text" class="form-control" id="first_name"
-                                value="{{user.first_name if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="middle_name">Middle Name</label>
-                            <input type="text" class="form-control" id="middle_name"
-                                value="{{user.middle_name if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="last_name">Last Name</label>
-                            <input type="text" class="form-control" id="last_name"
-                                value="{{user.last_name if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="suffix">Suffix</label>
-                            <input type="text" class="form-control" id="suffix"
-                                value="{{user.suffix if mode.upper() == 'EDIT'}}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="suffix">Date of Birth</label>
-                            <input type="date" class="form-control" id="suffix"
-                                value="{{user.date_of_birth if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="inputState">Gender</label>
-                            <select id="inputState" class="form-control">
-                                {% if genders %}
-                                {% for gender in genders %}
-                                {% if mode.upper() == 'EDIT' and user.gender == gender.gender %}
-                                <option value="{{gender.gender}}" selected>{{gender.gender}}</option>
-                                {% else %}
-                                <option value="{{gender.gender}}">{{gender.gender}}</option>
-                                {% endif %}
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputfoo">Ethincity/Race</label>
-                        <select class="custom-select" multiple size="{{ethnicity_count}}">
-                            {% if ethnicities %}
-                            {% for ethnicity in ethnicities %}
-                            {% if mode.upper() == 'EDIT' and ethnicity.ethnicity_Race in user.ethnicity_race %}
-                            <option value="ethnicity.ethnicity_Race" selected>{{ethnicity.ethnicity_Race}}</option>
-                            {% else %}
-                            <option value="ethnicity.ethnicity_Race">{{ethnicity.ethnicity_Race}}</option>
-                            {% endif %}
-                            {% endfor %}
-                            {% endif %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" id="inputAddress"
-                            value="{{user.mailing_address.address if mode.upper() == 'EDIT'}}">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="city">City</label>
-                            <input type="text" class="form-control" id="city"
-                                value="{{user.mailing_address.city if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="inputState">State</label>
-                            <select id="inputState" class="form-control">
-                                <option>CO</option>
-                                <option selected>VA</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="inputZip">Postal Code</label>
-                            <input type="text" class="form-control" id="inputZip"
-                                value="{{user.mailing_address.postal_code if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="inputZip">Country</label>
-                            <input type="text" class="form-control" id="inputZip"
-                                value="{{user.mailing_address.country if mode.upper() == 'EDIT'}}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="inputZip">Email Address</label>
-                            <input type="email" class="form-control" id="inputZip"
-                                value="{{user.email_address if mode.upper() == 'EDIT'}}">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="inputZip">Telephone</label>
-                            <input type="text" class="form-control" id="inputZip"
-                                value="{{user.telephone if mode.upper() == 'EDIT'}}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="inputState">Education Level</label>
-                            <select id="inputState" class="form-control">
-                                {% if education_levels %}
-                                {% for education_level in education_levels %}
-                                {% if mode.upper() == 'EDIT' and user.education_level == education_level.education_level %}
-                                <option value="{{education_level.education_level}}" selected>
-                                    {{education_level.education_level}}
-                                </option>
-                                {% else %}
-                                <option value="{{education_level.education_level}}">{{education_level.education_level}}
-                                </option>
-                                {% endif %}
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="inputState">Employment Status</label>
-                            <select id="inputState" class="form-control">
-                                {% if employment_status %}
-                                {% for status in employment_status %}
-                                {% if mode.upper() == 'EDIT' and user.employment_status == status.employment_status %}
-                                <option value="{{status.employment_status}}" selected>{{status.employment_status}}
-                                </option>
-                                {% else %}
-                                <option value="{{status.employment_status}}">{{status.employment_status}}</option>
-                                {% endif %}
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="inputState">Source</label>
-                            <select id="inputState" class="form-control">
-                                {% if providers %}
-                                {% for provider in providers %}
-                                {% if mode.upper() == 'EDIT' and user.source == provider.provider_name %}
-                                <option value="{{provider.provider_name}}" selected>{{provider.provider_name}}
-                                </option>
-                                {% else %}
-                                <option value="{{provider.provider_name}}">{{provider.provider_name}}</option>
-                                {% endif %}
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-                    </div>
-                    <a class="btn btn-success" href="{{url_for('referrals.get_referrals', id=user.mci_id)}}">Find
-                        Referrals</a>
-                </form>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
+{% include 'mci/user_detail.html' %}
 {% endblock %}

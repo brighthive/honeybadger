@@ -199,5 +199,5 @@ class ConfigurationFactory(object):
             byte: A random string of bytes for secret.
 
         """
-
-        return os.urandom(16)
+        return 'supersecretaccesscode'
+        # return os.urandom(16)

@@ -11,24 +11,46 @@ bp = Blueprint('mci', __name__, url_prefix='/mci')
 config = ConfigurationFactory.from_env()
 
 
+@bp.route('/gender')
+@login_required
 def get_genders():
-    return secure_get(config.mci_url + '/gender', 'genders')
+    return json.dumps(secure_get(config.mci_url + '/gender', 'genders'))
 
 
+@bp.route('/ethnicity')
+@login_required
 def get_ethnicities():
-    return secure_get(config.mci_url + '/ethnicity', 'ethnicities')
+    return json.dumps(secure_get(config.mci_url + '/ethnicity', 'ethnicities'))
 
 
+@bp.route('/education_level')
+@login_required
 def get_education_level():
-    return secure_get(config.mci_url + '/education_level', 'education_levels')
+    return json.dumps(secure_get(config.mci_url + '/education_level', 'education_levels'))
 
 
+@bp.route('/employment_status')
+@login_required
 def get_employment_status():
-    return secure_get(config.mci_url + '/employment_status', 'employment_status')
+    return json.dumps(secure_get(config.mci_url + '/employment_status', 'employment_status'))
 
 
+@bp.route('/provider')
+@login_required
 def get_providers():
-    return secure_get(config.data_resources_url + '/providers', 'providers')
+    return json.dumps(secure_get(config.data_resources_url + '/providers', 'providers'))
+
+
+@bp.route('/country')
+@login_required
+def get_countries():
+    return json.dumps([{'id': 1, 'country': 'CA'}, {'id': 2, 'country': 'US'}])
+
+
+@bp.route('/state')
+@login_required
+def get_states():
+    return json.dumps([{'id': 1, 'state': 'CO'}, {'id': 2, 'state': 'VA'}])
 
 
 @bp.route('/')
@@ -80,23 +102,18 @@ def index():
 @login_required
 def users(id: str):
     token = get_access_token()
+    output = request.args.get('output')
+    try:
+        output = output.lower()
+    except Exception:
+        output = 'html'
     headers = {'content-type': 'application/json',
                'authorization': 'bearer {}'.format(token)}
     query = '{}/users/{}'.format(config.mci_url, id)
     r = requests.get(query, headers=headers)
     if r.status_code == 200:
         user = r.json()
-
-    # Clean the data for a bit more consistent output
-    if len(user['education_level']) < 2:
-        user['education_level'] = 'Unknown'
-    user['gender'] = user['gender'].capitalize()
-    ethnicities = get_ethnicities()
-    ethnicity_count = len(ethnicities)
-    return render_template('mci/user_detail.html', user=user, mode='EDIT',
-                           genders=get_genders(), ethnicities=ethnicities,
-                           ethnicity_count=ethnicity_count, education_levels=get_education_level(),
-                           employment_status=get_employment_status(), providers=get_providers())
+    return(json.dumps(user))
 
 
 @bp.route('/users/<string:id>/delete', methods=['GET'])
@@ -108,3 +125,25 @@ def delete_user(id: str):
     query = '{}/users/{}'.format(config.mci_url, id)
     r = requests.delete(query, headers=headers)
     return redirect(url_for('mci.index'))
+
+
+@bp.route('/users', methods=['POST'])
+@login_required
+def add_user():
+    data = request.json
+    token = get_access_token()
+    headers = {'content-type': 'application/json',
+               'authorization': 'bearer {}'.format(token)}
+    query = '{}/users'.format(config.mci_url)
+    if data['source'] == '':
+        data['source'] = 'HoneyBadger'
+    r = requests.post(query, headers=headers, data=json.dumps(data))
+    print('request done')
+    print(r.status_code)
+    print(r.json())
+    if r.status_code == 200:
+        return json.dumps(r.json()), r.status_code
+    elif r.status_code == 201:
+        return json.dumps(r.json()), r.status_code
+    else:
+        return json.dumps(r.json()), r.status_code
