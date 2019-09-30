@@ -3,7 +3,28 @@ $(function () {
         contentType: "application/json"
     });
 
-    let appLoading = false;
+
+    function setNavLink() {
+        let path = location.pathname;
+        path = decodeURIComponent(path.replace(/\/$/, ''));
+        $('.nav-link').removeClass('active');
+        $('.nav-link').each(function () {
+            let href = $(this).attr('href');
+            if (href !== undefined) {
+                if (path.length === 0) {
+                    $(this).addClass('active');
+                    return false;
+                } else if (href.substring(0, path.length) === path) {
+                    $(this).addClass('active');
+                    return false;
+                }
+            }
+        });
+    }
+
+    setNavLink();
+
+
     try {
         appLoading = true;
         preloadMCIFormFields().then(function () {
