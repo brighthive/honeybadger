@@ -7,6 +7,7 @@
 
 # application secrets
 **/config.json
+**/config.va.json
 
 # pytest artifacts
 **/.pytest_cache

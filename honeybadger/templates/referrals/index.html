@@ -7,7 +7,7 @@
             {% else %}
         <li class="page-item disabled">
             {% endif %}
-            <a class="page-link" href="{{url_for('mci.index', offset=0, limit=limit)}}" aria-label="First">
+            <a class="page-link" href="{{url_for('referrals.index', offset=0, limit=limit, last_offset=last_offset)}}" aria-label="First">
                 <span aria-hidden="true">&lsaquo;</span>
                 <span class="sr-only">First</span>
             </a>
@@ -17,7 +17,8 @@
             {% else %}
         <li class="page-item disabled">
             {% endif %}
-            <a class="page-link" href="{{url_for('mci.index', offset=(limit * page) - 2 * limit, limit=limit)}}"
+            <a class="page-link"
+                href="{{url_for('referrals.index', offset=(limit * page) - 2 * limit, limit=limit, last_offset=last_offset)}}"
                 aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
@@ -31,7 +32,9 @@
             {% else %}
         <li class="page-item disabled">
             {% endif %}
-            <a class="page-link" href="{{url_for('mci.index', offset=(limit * page), limit=limit)}}" aria-label="Next">
+            <a class="page-link"
+                href="{{url_for('referrals.index', offset=(limit * page), limit=limit, last_offset=last_offset)}}"
+                aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>
@@ -41,7 +44,7 @@
             {% else %}
         <li class="page-item disabled">
             {% endif %}
-            <a class="page-link" href="{{url_for('mci.index', offset=(limit * page_count), limit=limit)}}"
+            <a class="page-link" href="{{url_for('referrals.index', offset=(limit * page_count), limit=limit, last_offset=last_offset)}}"
                 aria-label="Last">
                 <span aria-hidden="true">&rsaquo;</span>
                 <span class="sr-only">Last</span>
@@ -67,7 +70,7 @@
         {% for referral in referrals%}
         <tr>
             <th scope="row"><a href="{{url_for('mci.users', id=referral.mci_id)}}">{{referral.id}}</a></th>
-            <th scope="row"><a href="{{url_for('mci.users', id=referral.mci_id)}}">{{referral.mci_id[-6:]}}</a></th>
+            <th scope="row"><a href="{{url_for('mci.users', id=referral.mci_id)}}" class="user-detail">{{referral.mci_id[-6:]}}</a></th>
             <td>{{referral.source_provider_id}}</td>
             <td>{{referral.destination_provider_id}}</td>
             <td>{{referral.program_id}}</td>
@@ -79,6 +82,4 @@
         {% endfor %}
     </tbody>
 </table>
-<h5>JSON Output</h5>
-<p>{{referrals}}</p>
 {% endblock %}

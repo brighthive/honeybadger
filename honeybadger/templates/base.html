@@ -27,8 +27,8 @@
     </nav>
     {% endif %}
     <div class="container-fluid">
-        {% if g.user %}
         <div class="row">
+            {% if g.user %}
             <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
@@ -95,15 +95,18 @@
                     </ul>
                 </div>
             </nav>
+            {% endif %}
+            {% if g.user %}
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
                 {% else %}
-                <main role="main" style="padding:25px">
+                <main role="main" class="col-md-12">
                     {% endif %}
                     {% block content %}{% endblock %}
                 </main>
         </div>
     </div>
     {% include 'spinner.html' %}
+    {% include 'mci/user_detail.html' %}
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

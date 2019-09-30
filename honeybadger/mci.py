@@ -93,9 +93,9 @@ def index():
         user['gender'] = user['gender'].capitalize()
         ethnicities = get_ethnicities()
         ethnicity_count = len(ethnicities)
-        return render_template('mci/index.html', users=data['users'], page_count=page_count, offset=int(offset), limit=limit, page=current_page, mode='CREATE', user=user)
     else:
-        return render_template('mci/index.html', users=data['users'], page_count=page_count, offset=int(offset), limit=limit, page=current_page, mode='CREATE', user=None)
+        user = None
+    return render_template('mci/index.html', users=data['users'], page_count=page_count, offset=int(offset), limit=limit, page=current_page, user=user)
 
 
 @bp.route('/users/<string:id>', methods=['GET'])
@@ -137,6 +137,7 @@ def add_user():
     query = '{}/users'.format(config.mci_url)
     if data['source'] == '':
         data['source'] = 'HoneyBadger'
+    print(data['education_level'])
     r = requests.post(query, headers=headers, data=json.dumps(data))
     print('request done')
     print(r.status_code)

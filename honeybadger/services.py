@@ -32,7 +32,7 @@ def get_access_token():
     return r.json()['access_token']
 
 
-def secure_get(url: str, key: str):
+def secure_get(url: str, key: str = None):
     """Conveniene method for GET requests against API resources.
 
     Args:
@@ -50,7 +50,10 @@ def secure_get(url: str, key: str):
     r = requests.get(url, headers=headers)
     if r.status_code == 200:
         data = r.json()
-        return data[key]
+        if key:
+            return data[key]
+        else:
+            return data
     else:
         return None
 

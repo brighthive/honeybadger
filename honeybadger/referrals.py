@@ -14,9 +14,35 @@ config = ConfigurationFactory.from_env()
 @bp.route('/', methods=['GET'])
 @login_required
 def index():
-    query = '{}/referrals'.format(config.data_resources_url)
-    referrals = secure_get(query, 'referrals')
-    return render_template('referrals/index.html', referrals=referrals, page=1, limit=20, page_count=20)
+    offset = request.args.get('offset')
+    limit = request.args.get('limit')
+
+    # note this is a fix for the error with miscalcuation of offsets for pages beyond 1
+    last_offset = request.args.get('last_offset')
+
+    if not offset or not limit:
+        offset = 0
+        query = '{}/referrals?offset={}'.format(
+            config.data_resources_url, offset)
+    else:
+        query = '{}/referrals?offset={}&limit={}'.format(
+            config.data_resources_url, offset, limit)
+    referrals = secure_get(query)
+    links = referrals['links']
+    last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
+
+    # recalculate each time just in case
+    if not last_offset:
+        _offset = int(last_link[0].split('=')[1])
+    else:
+        _offset = int(last_offset)
+    limit = int(last_link[1].split('=')[1])
+    page_count = ceil(_offset / limit)
+    current_page = ceil(int(offset) / limit) + 1
+    if current_page == 1:
+        last_offset = _offset
+    return render_template('referrals/index.html', referrals=referrals['referrals'], offset=int(offset), page=current_page,
+                           limit=limit, page_count=page_count, last_offset=last_offset)
 
 
 @bp.route('/<string:id>', methods=['GET'])
