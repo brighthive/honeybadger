@@ -1,0 +1,91 @@
+<div class="modal fade" id="referral-form-modal">
+    <div class="modal-dialog mw-100 w-75">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="referral-form">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="referral-id">Referral ID</label>
+                            <input type="text" class="form-control form-control-sm" id="referral-id" readonly>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="user-id">MCI ID</label>
+                            <input type="text" class="form-control form-control-sm" id="user-id" readonly>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="referral-date">Referral Date</label>
+                            <input type="date" class="form-control form-control-sm" id="referral-date" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="program">Program</label>
+                            <select id="program" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="source-provider">Source
+                                Provider</label>
+                            <select id="source-provider" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="destination-provider">Destination
+                                Provider</label>
+                            <select id="destination-provider" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="recommended-date">Recommended
+                                Date</label>
+                            <input type="date" class="form-control form-control-sm" id="recommended-date">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="accepted-date">Accepted Date</label>
+                            <input type="date" class="form-control form-control-sm" id="accepted-date">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="completed-date">Completed Date</label>
+                            <input type="date" class="form-control form-control-sm" id="completed-date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="serviced-date">Serviced Date</label>
+                            <input type="date" class="form-control form-control-sm" id="serviced-date">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="referral-start-date">Referral Start
+                                Date</label>
+                            <input type="date" class="form-control form-control-sm" id="referral-start-date">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="col-form-label col-form-label-sm" for="referral-end-date">Referral End
+                                Date</label>
+                            <input type="date" class="form-control form-control-sm" id="referral-end-date">
+                        </div>
+                    </div>
+                    <div class="row" id="create-referral-buttons">
+                        <div class="col-md-4">
+                            <button class="btn btn-block btn-success" id="clear-referral-form">Clear Form</button>
+                        </div>
+                        <div class="col-md-4 offset-md-4">
+                            <button class="btn btn-block btn-primary" id="save-referral">Save Referral</button>
+                        </div>
+                    </div>
+                    <div class="row" id="edit-referral-buttons">
+                        <div class="col-md-6">
+                            <button class="btn btn-block btn-secondary" id="service-referral">Service Referral</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-block btn-primary" id="clear-user-form">Update Referral</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

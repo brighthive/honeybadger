@@ -4,7 +4,7 @@ from math import ceil
 from flask import Blueprint, render_template, request, redirect, url_for
 from honeybadger.auth import get_access_token, login_required
 from honeybadger.config import ConfigurationFactory
-from honeybadger.services import secure_get, secure_post
+from honeybadger.services import secure_get, secure_post, secure_patch, secure_delete
 
 
 bp = Blueprint('referrals', __name__, url_prefix='/referrals')
@@ -47,12 +47,27 @@ def index():
 
 @bp.route('/<string:id>', methods=['GET'])
 @login_required
-def get_referrals(id):
-    if id:
-        query = '{}/referrals/query'.format(config.data_resources_url)
-        data = {'mci_id': id}
-        referrals = secure_post(query, data, 'results')
-    else:
-        query = '{}/referrals'
-        referrals = secure_get(query, 'results')
-    return render_template('referrals/index.html', referrals=referrals, page=1)
+def get_referral(id):
+    query = '{}/referrals/{}'.format(config.data_resources_url, id)
+    referral = secure_get(query)
+    return json.dumps(referral)
+
+
+@bp.route('/<string:id>', methods=['POST'])
+@login_required
+def service_referral(id):
+    data = request.json
+    query = '{}/referrals/{}'.format(config.data_resources_url, id)
+    resp = secure_patch(query, data)
+    print(resp)
+    return json.dumps({'message': 'OK!'})
+
+
+@bp.route('/<string:id>', methods=['DELETE'])
+@login_required
+def delete_referral(id):
+    data = request.json
+    query = '{}/referrals/{}'.format(config.data_resources_url, id)
+    resp = secure_delete(query)
+    print(resp)
+    return json.dumps({'message': 'OK!'})

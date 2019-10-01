@@ -41,6 +41,12 @@ def get_providers():
     return json.dumps(secure_get(config.data_resources_url + '/providers', 'providers'))
 
 
+@bp.route('/program')
+@login_required
+def get_programs():
+    return json.dumps(secure_get(config.data_resources_url + '/programs', 'programs'))
+
+
 @bp.route('/country')
 @login_required
 def get_countries():
