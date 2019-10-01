@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Provider Name</th>
+            <th scope="col">Provider Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for provider in providers %}
+        <tr>
+            <td>{{provider.id}}</td>
+            <td>{{provider.provider_name}}</td>
+            <td>{{provider.provider_description}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

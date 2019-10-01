@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Employment Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employment_status in employment_statuses %}
+        <tr>
+            <td>{{employment_status.id}}</td>
+            <td>{{employment_status.employment_status}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

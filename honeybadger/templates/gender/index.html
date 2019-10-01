@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Gender</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for gender in genders %}
+        <tr>
+            <td>{{gender.id}}</td>
+            <td>{{gender.gender}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

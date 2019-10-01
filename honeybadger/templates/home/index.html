@@ -9,11 +9,17 @@
         </tr>
     </thead>
     <tbody>
+        {% for stat in stats %}
         <tr>
-            <td>Master Client Index</td>
-            <td>OK</td>
-            <td>4860</td>
+            <td>{{stat.data_resource}}</td>
+            {% if stat.status == 'OK' %}
+            <td style="color:green">{{stat.status}}</td>
+            {% else %}
+            <td style="color:red">{{stat.status}}</td>
+            {% endif %}
+            <td>{{stat.record_count}}</td>
         </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}

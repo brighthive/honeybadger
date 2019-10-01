@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Ethnicity/Race</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ethnicity in ethnicities %}
+        <tr>
+            <td>{{ethnicity.id}}</td>
+            <td>{{ethnicity.ethnicity_Race}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
