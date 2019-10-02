@@ -199,5 +199,8 @@ class ConfigurationFactory(object):
             byte: A random string of bytes for secret.
 
         """
-        return 'supersecretaccesscode'
-        # return os.urandom(16)
+        environment = os.getenv('FLASK_ENV', 'development')
+        if environment.lower() == 'production':
+            return os.urandom(16)
+        else:
+            return 'supersecretaccesscode'

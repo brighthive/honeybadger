@@ -12,47 +12,52 @@ config = ConfigurationFactory.from_env()
 
 
 def compute_mci_records():
-    token = get_access_token()
-    headers = {'content-type': 'application/json',
-               'authorization': 'bearer {}'.format(token)}
-    query = '{}/users?offset={}'.format(config.mci_url, 0)
-    r = requests.get(query, headers=headers)
-    data = r.json()
-    links = data['links']
-    last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
+    try:
+        token = get_access_token()
+        headers = {'content-type': 'application/json',
+                   'authorization': 'bearer {}'.format(token)}
+        query = '{}/users?offset={}'.format(config.mci_url, 0)
+        r = requests.get(query, headers=headers)
+        data = r.json()
+        links = data['links']
+        last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
 
-    # recalculate each time just in case
-    _offset = int(last_link[0].split('=')[1])
-    limit = int(last_link[1].split('=')[1])
-    page_count = ceil(_offset / limit)
-    query = '{}/users?offset={}&limit={}'.format(
-        config.mci_url, _offset, limit)
-    r = requests.get(query, headers=headers)
-    last_page = len(r.json()['users'])
-    total = (page_count * limit) + last_page
-    return total
+        _offset = int(last_link[0].split('=')[1])
+        limit = int(last_link[1].split('=')[1])
+        page_count = ceil(_offset / limit)
+        query = '{}/users?offset={}&limit={}'.format(
+            config.mci_url, _offset, limit)
+        r = requests.get(query, headers=headers)
+        last_page = len(r.json()['users'])
+        total = (page_count * limit) + last_page
+        return total
+    except Exception:
+        return None
 
 
 def compute_referral_records():
-    token = get_access_token()
-    headers = {'content-type': 'application/json',
-               'authorization': 'bearer {}'.format(token)}
-    query = '{}/referrals?offset={}'.format(config.data_resources_url, 0)
-    r = requests.get(query, headers=headers)
-    data = r.json()
-    links = data['links']
-    last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
+    try:
+        token = get_access_token()
+        headers = {'content-type': 'application/json',
+                   'authorization': 'bearer {}'.format(token)}
+        query = '{}/referrals?offset={}'.format(config.data_resources_url, 0)
+        r = requests.get(query, headers=headers)
+        data = r.json()
+        links = data['links']
+        last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
 
-    # recalculate each time just in case
-    _offset = int(last_link[0].split('=')[1])
-    limit = int(last_link[1].split('=')[1])
-    page_count = ceil(_offset / limit)
-    query = '{}/referrals?offset={}&limit={}'.format(
-        config.data_resources_url, _offset, limit)
-    r = requests.get(query, headers=headers)
-    last_page = len(r.json()['referrals'])
-    total = (page_count * limit) + last_page
-    return total
+        # recalculate each time just in case
+        _offset = int(last_link[0].split('=')[1])
+        limit = int(last_link[1].split('=')[1])
+        page_count = ceil(_offset / limit)
+        query = '{}/referrals?offset={}&limit={}'.format(
+            config.data_resources_url, _offset, limit)
+        r = requests.get(query, headers=headers)
+        last_page = len(r.json()['referrals'])
+        total = (page_count * limit) + last_page
+        return total
+    except Exception:
+        return None
 
 
 @bp.route('/')

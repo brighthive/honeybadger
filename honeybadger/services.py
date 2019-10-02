@@ -58,7 +58,7 @@ def secure_get(url: str, key: str = None):
         return None
 
 
-def secure_post(url: str, data: dict, key: str):
+def secure_post(url: str, data: dict, key: str = None):
     """Conveniene method for POST requests against API resources.
 
     Args:
@@ -74,9 +74,13 @@ def secure_post(url: str, data: dict, key: str):
     token = get_access_token()
     headers = {'content-type': 'application/json',
                'authorization': 'bearer {}'.format(token)}
+    print('Posting {}'.format(data))
     r = requests.post(url, headers=headers, data=json.dumps(data))
-    if r.status_code == 200:
-        return r.json()[key]
+    if r.status_code == 200 or r.status_code == 201:
+        if key:
+            return r.json()[key]
+        else:
+            return r.json()
     else:
         return None
 
@@ -99,7 +103,6 @@ def secure_patch(url: str, data: dict, key: str = None):
                'authorization': 'bearer {}'.format(token)}
     r = requests.patch(url, headers=headers, data=json.dumps(data))
     if r.status_code == 200 or r.status_code == 201:
-        print(r.json())
         if key:
             return r.json()[key]
         else:
@@ -123,9 +126,7 @@ def secure_delete(url: str):
     headers = {'content-type': 'application/json',
                'authorization': 'bearer {}'.format(token)}
     r = requests.delete(url, headers=headers)
-    print(r.status_code)
     if r.status_code == 200 or r.status_code == 201:
-        print(r.json())
         return r.json()
     else:
         return None

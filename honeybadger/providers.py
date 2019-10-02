@@ -12,5 +12,4 @@ bp = Blueprint('providers', __name__, url_prefix='/providers')
 @login_required
 def index():
     providers = get_providers()
-    print(json.loads(providers)[0])
     return render_template('providers/index.html', providers=json.loads(providers))

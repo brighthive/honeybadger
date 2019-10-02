@@ -29,18 +29,24 @@ def index():
             config.data_resources_url, offset, limit)
     referrals = secure_get(query)
     links = referrals['links']
-    last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
+    try:
+        last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
 
-    # recalculate each time just in case
-    if not last_offset:
-        _offset = int(last_link[0].split('=')[1])
-    else:
-        _offset = int(last_offset)
-    limit = int(last_link[1].split('=')[1])
-    page_count = ceil(_offset / limit)
-    current_page = ceil(int(offset) / limit) + 1
-    if current_page == 1:
-        last_offset = _offset
+        # recalculate each time just in case
+        if not last_offset:
+            _offset = int(last_link[0].split('=')[1])
+        else:
+            _offset = int(last_offset)
+        limit = int(last_link[1].split('=')[1])
+        page_count = ceil(_offset / limit)
+        current_page = ceil(int(offset) / limit) + 1
+        if current_page == 1:
+            last_offset = _offset
+    except Exception:
+        last_offset = 0
+        current_page = 0
+        page_count = 0
+        offset = 0
     return render_template('referrals/index.html', referrals=referrals['referrals'], offset=int(offset), page=current_page,
                            limit=limit, page_count=page_count, last_offset=last_offset)
 
@@ -59,6 +65,16 @@ def service_referral(id):
     data = request.json
     query = '{}/referrals/{}'.format(config.data_resources_url, id)
     resp = secure_patch(query, data)
+    return json.dumps({'message': 'OK!'})
+
+
+@bp.route('/', methods=['POST'])
+@login_required
+def create_referral():
+    data = request.json
+    print(data)
+    query = '{}/referrals'.format(config.data_resources_url)
+    resp = secure_post(query, data)
     print(resp)
     return json.dumps({'message': 'OK!'})
 
@@ -69,5 +85,4 @@ def delete_referral(id):
     data = request.json
     query = '{}/referrals/{}'.format(config.data_resources_url, id)
     resp = secure_delete(query)
-    print(resp)
     return json.dumps({'message': 'OK!'})

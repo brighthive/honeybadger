@@ -62,45 +62,54 @@ def get_states():
 @bp.route('/')
 @login_required
 def index():
-    id = request.args.get('id')
-    offset = request.args.get('offset')
-    limit = request.args.get('limit')
-    if not offset or not limit:
-        offset = 0
-        query = '{}/users?offset={}'.format(config.mci_url, offset)
-    else:
-        query = '{}/users?offset={}&limit={}'.format(
-            config.mci_url, offset, limit)
-    token = get_access_token()
-    headers = {'content-type': 'application/json',
-               'authorization': 'bearer {}'.format(token)}
-    r = requests.get(query, headers=headers)
-    data = r.json()
-    links = data['links']
-    last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
-
-    # recalculate each time just in case
-    _offset = int(last_link[0].split('=')[1])
-    limit = int(last_link[1].split('=')[1])
-    page_count = ceil(_offset / limit)
-    current_page = ceil(int(offset) / limit) + 1
-    if id:
+    try:
+        id = request.args.get('id')
+        offset = request.args.get('offset')
+        limit = request.args.get('limit')
+        if not offset or not limit:
+            offset = 0
+            query = '{}/users?offset={}'.format(config.mci_url, offset)
+        else:
+            query = '{}/users?offset={}&limit={}'.format(
+                config.mci_url, offset, limit)
         token = get_access_token()
         headers = {'content-type': 'application/json',
                    'authorization': 'bearer {}'.format(token)}
-        query = '{}/users/{}'.format(config.mci_url, id)
         r = requests.get(query, headers=headers)
-        if r.status_code == 200:
-            user = r.json()
+        data = r.json()
+        links = data['links']
+        last_link = links[len(links) - 1]['href'].split('?')[1].split('&')
 
-        # Clean the data for a bit more consistent output
-        if len(user['education_level']) < 2:
-            user['education_level'] = 'Unknown'
-        user['gender'] = user['gender'].capitalize()
-        ethnicities = get_ethnicities()
-        ethnicity_count = len(ethnicities)
-    else:
+        # recalculate each time just in case
+        _offset = int(last_link[0].split('=')[1])
+        limit = int(last_link[1].split('=')[1])
+        page_count = ceil(_offset / limit)
+        current_page = ceil(int(offset) / limit) + 1
+        if id:
+            token = get_access_token()
+            headers = {'content-type': 'application/json',
+                       'authorization': 'bearer {}'.format(token)}
+            query = '{}/users/{}'.format(config.mci_url, id)
+            r = requests.get(query, headers=headers)
+            if r.status_code == 200:
+                user = r.json()
+
+            # Clean the data for a bit more consistent output
+            if len(user['education_level']) < 2:
+                user['education_level'] = 'Unknown'
+            user['gender'] = user['gender'].capitalize()
+            ethnicities = get_ethnicities()
+            ethnicity_count = len(ethnicities)
+        else:
+            user = None
+    except Exception:
+        page_count = 0
+        offset = 0
+        limit = 0
+        data['users'] = {}
         user = None
+        current_page = 0
+
     return render_template('mci/index.html', users=data['users'], page_count=page_count, offset=int(offset), limit=limit, page=current_page, user=user)
 
 
@@ -145,9 +154,6 @@ def add_user():
         data['source'] = 'HoneyBadger'
     print(data['education_level'])
     r = requests.post(query, headers=headers, data=json.dumps(data))
-    print('request done')
-    print(r.status_code)
-    print(r.json())
     if r.status_code == 200:
         return json.dumps(r.json()), r.status_code
     elif r.status_code == 201:

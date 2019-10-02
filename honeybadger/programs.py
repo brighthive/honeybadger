@@ -12,5 +12,4 @@ bp = Blueprint('programs', __name__, url_prefix='/programs')
 @login_required
 def index():
     programs = get_programs()
-    print(json.loads(programs)[0])
     return render_template('programs/index.html', programs=json.loads(programs))

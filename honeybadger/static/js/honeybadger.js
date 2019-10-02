@@ -3,25 +3,6 @@ $(function () {
         contentType: "application/json"
     });
 
-
-    function setNavLink() {
-        let path = location.pathname;
-        path = decodeURIComponent(path.replace(/\/$/, ''));
-        $('.nav-link').removeClass('active');
-        $('.nav-link').each(function () {
-            let href = $(this).attr('href');
-            if (href !== undefined) {
-                if (path.length === 0) {
-                    $(this).addClass('active');
-                    return false;
-                } else if (href.substring(0, path.length) === path) {
-                    $(this).addClass('active');
-                    return false;
-                }
-            }
-        });
-    }
-
     setNavLink();
 
 
@@ -46,6 +27,24 @@ $(function () {
         });
     } catch (e) {
         alert('Error loading page.');
+    }
+
+    function setNavLink() {
+        let path = location.pathname;
+        path = decodeURIComponent(path.replace(/\/$/, ''));
+        $('.nav-link').removeClass('active');
+        $('.nav-link').each(function () {
+            let href = $(this).attr('href');
+            if (href !== undefined) {
+                if (path.length === 0) {
+                    $(this).addClass('active');
+                    return false;
+                } else if (href.substring(0, path.length) === path) {
+                    $(this).addClass('active');
+                    return false;
+                }
+            }
+        });
     }
 
     async function preloadMCIFormFields() {
@@ -288,38 +287,64 @@ $(function () {
         setUserFormDefaults();
     });
 
-    $('#save-user').click(function (event) {
+    $('#save-referral').click(function (event) {
         event.preventDefault();
-        const userForm = $('#mci-form')
-        user = {
-            'registration_date': $('#registration-date').val(),
-            'vendor_id': $('#vendor-id').val(),
-            'first_name': $('#first-name').val(),
-            'middle_name': $('#middle-name').val(),
-            'last_name': $('#last-name').val(),
-            'suffix': $('#suffix').val(),
-            'date_of_birth': $('#date-of-birth').val(),
-            'gender': $('#gender').val(),
-            'ethnicity_race': $('#ethnicity-race').val(),
-            'mailing_address': {
-                'address': $('#address').val(),
-                'city': $('#city').val(),
-                'country': $('#country').val(),
-                'postal_code': $('#postal-code').val(),
-                'state': $('#state').val()
-            },
-            'email_address': $('#email-address').val(),
-            'telephone': $('#telephone').val(),
-            'education_level': $('#education-level').val(),
-            'employment_status': $('#employment-status').val(),
-            'source': $('#provider').val(),
-        };
-        $.post('/mci/users', JSON.stringify(user)).done(function () {
+        const referralForm = $('#referral-form');
+        let referral = {
+            'mci_id': $('#user-id').val(),
+            'referral_date': $('#referral-date').val(),
+            'program_id': parseInt($('#program').val()),
+            'source_provider_id': parseInt($('#source-provider').val()),
+            'destination_provider_id': parseInt($('#destination-provider').val()),
+            'recommended_date': $('#recommended-date').val(),
+            'accepted_date': $('#accepted-date').val(),
+            'completed_date': $('#completed-date').val(),
+            'serviced_date': $('#serviced-date').val(),
+            'referral_start_date': $('#referral-start-date').val(),
+            'referral_end_date': $('#referral-end-date').val()
+        }
+        $.each(referral, function (key, value) {
+            if (value === '' || value === null) {
+                delete referral[key];
+            }
+            return referral;
+        });
+        console.log(referral);
+        $.post('/referrals/', JSON.stringify(referral)).done(function () {
             alert('Done');
         }).fail(function (data) {
             alert('Fail');
             console.log(JSON.parse(data['responseText']));
         })
+        // user = {
+        //     'registration_date': $('#registration-date').val(),
+        //     'vendor_id': $('#vendor-id').val(),
+        //     'first_name': $('#first-name').val(),
+        //     'middle_name': $('#middle-name').val(),
+        //     'last_name': $('#last-name').val(),
+        //     'suffix': $('#suffix').val(),
+        //     'date_of_birth': $('#date-of-birth').val(),
+        //     'gender': $('#gender').val(),
+        //     'ethnicity_race': $('#ethnicity-race').val(),
+        //     'mailing_address': {
+        //         'address': $('#address').val(),
+        //         'city': $('#city').val(),
+        //         'country': $('#country').val(),
+        //         'postal_code': $('#postal-code').val(),
+        //         'state': $('#state').val()
+        //     },
+        //     'email_address': $('#email-address').val(),
+        //     'telephone': $('#telephone').val(),
+        //     'education_level': $('#education-level').val(),
+        //     'employment_status': $('#employment-status').val(),
+        //     'source': $('#provider').val(),
+        // };
+        // $.post('/mci/users', JSON.stringify(user)).done(function () {
+        //     alert('Done');
+        // }).fail(function (data) {
+        //     alert('Fail');
+        //     console.log(JSON.parse(data['responseText']));
+        // })
     });
 
     $('#service-referral').click(function (event) {
@@ -343,10 +368,10 @@ $(function () {
         $.ajax({
             url: '/referrals/' + $('#referral-id').val(),
             type: 'DELETE'
-        }).done(function() {
+        }).done(function () {
             $('#referral-form-modal').modal('toggle');
             alert('Done!');
-        }).fail(function() {
+        }).fail(function () {
             alert('Failed!');
         });
     });
@@ -356,12 +381,12 @@ $(function () {
         const mciID = $('#mci-id').val();
         $('#mci-form-modal').modal('toggle');
         $('#referral-form-modal').modal('toggle');
-        initReferralForm().then(function() {
+        initReferralForm().then(function () {
             $('#user-id').val(mciID);
             $('#referral-date').val(getDate());
             $('#create-referral-buttons').show();
             $('#edit-referral-buttons').hide();
-        }).catch(function() {
+        }).catch(function () {
             alert('Failed to load JavaScript');
         });
     });

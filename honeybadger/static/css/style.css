@@ -34,6 +34,12 @@ body {
   text-transform: uppercase;
 }
 
+.center-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /*
  * Navbar
  */
