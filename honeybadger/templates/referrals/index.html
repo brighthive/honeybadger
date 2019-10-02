@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+{% if user %}
+<h4>Referrals for <strong>{{user.first_name}} {{user.last_name}}</strong></h4>
+{% endif %}
 {% if page_count >= 0 %}
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm flex-sm-wrap">

@@ -74,8 +74,7 @@ def secure_post(url: str, data: dict, key: str = None):
     token = get_access_token()
     headers = {'content-type': 'application/json',
                'authorization': 'bearer {}'.format(token)}
-    print('Posting {}'.format(data))
-    r = requests.post(url, headers=headers, data=json.dumps(data))
+    r = requests.post(url, headers=headers, data=data)
     if r.status_code == 200 or r.status_code == 201:
         if key:
             return r.json()[key]

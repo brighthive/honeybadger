@@ -59,6 +59,20 @@ def get_referral(id):
     return json.dumps(referral)
 
 
+@bp.route('/query/<string:id>', methods=['GET'])
+@login_required
+def query_referral(id):
+    data = {'mci_id': id}
+    query = '{}/referrals/query'.format(config.data_resources_url)
+    resp = secure_post(query, json.dumps(data), 'results')
+    user_query = '{}/users/{}'.format(config.mci_url, id)
+    user_resp = secure_get(user_query)
+    try:
+        return render_template('referrals/index.html', referrals=resp, offset=0, page=1, limit=1, page_count=0, last_offset=0, user=user_resp)
+    except Exception:
+        return render_template('referrals/index.html', referrals=[], offset=0, page=1, limit=1, page_count=0, last_offset=0, user=user_resp)
+
+
 @bp.route('/<string:id>', methods=['POST'])
 @login_required
 def service_referral(id):
@@ -72,10 +86,8 @@ def service_referral(id):
 @login_required
 def create_referral():
     data = request.json
-    print(data)
     query = '{}/referrals'.format(config.data_resources_url)
-    resp = secure_post(query, data)
-    print(resp)
+    resp = secure_post(query, json.dumps(data))
     return json.dumps({'message': 'OK!'})
 
 

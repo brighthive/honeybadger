@@ -242,7 +242,6 @@ $(function () {
             initReferralForm().then(function (_) {
                 stopSpinner();
                 $('#referral-form-modal').modal('toggle');
-                console.log(data);
                 $('#referral-id').val(data['id']);
                 $('#user-id').val(data['mci_id']);
                 $('#referral-date').val(data['referral_date']);
@@ -261,30 +260,12 @@ $(function () {
         });
     });
 
-    $('#add-user').click(function (event) {
+    $('#clear-referral-form').click(function (event) {
         event.preventDefault();
-        $('#create-buttons').show();
-        $('#edit-buttons').hide();
-        $('#mci-form').trigger('reset');
-        initMCIForm().then(function (data, err) {
-            if (appLoading) {
-                startSpinner();
-                setTimeout(function () {
-                    stopSpinner();
-                    $('#mci-form-modal').modal('toggle');
-                    setUserFormDefaults();
-                }, 3000);
-            } else {
-                $('#mci-form-modal').modal('toggle');
-                setUserFormDefaults();
-            }
-        });
-    });
-
-    $('#clear-user-form').click(function (event) {
-        event.preventDefault();
-        $('#mci-form').trigger('reset');
-        setUserFormDefaults();
+        const mciID = $('#user-id').val();
+        $('#referral-form').trigger('reset');
+        setReferralFormDefaults();
+        $('#user-id').val(mciID);
     });
 
     $('#save-referral').click(function (event) {
@@ -312,39 +293,12 @@ $(function () {
         console.log(referral);
         $.post('/referrals/', JSON.stringify(referral)).done(function () {
             alert('Done');
+            $('#referral-form-modal').modal('toggle');
+            location.reload();
         }).fail(function (data) {
             alert('Fail');
             console.log(JSON.parse(data['responseText']));
-        })
-        // user = {
-        //     'registration_date': $('#registration-date').val(),
-        //     'vendor_id': $('#vendor-id').val(),
-        //     'first_name': $('#first-name').val(),
-        //     'middle_name': $('#middle-name').val(),
-        //     'last_name': $('#last-name').val(),
-        //     'suffix': $('#suffix').val(),
-        //     'date_of_birth': $('#date-of-birth').val(),
-        //     'gender': $('#gender').val(),
-        //     'ethnicity_race': $('#ethnicity-race').val(),
-        //     'mailing_address': {
-        //         'address': $('#address').val(),
-        //         'city': $('#city').val(),
-        //         'country': $('#country').val(),
-        //         'postal_code': $('#postal-code').val(),
-        //         'state': $('#state').val()
-        //     },
-        //     'email_address': $('#email-address').val(),
-        //     'telephone': $('#telephone').val(),
-        //     'education_level': $('#education-level').val(),
-        //     'employment_status': $('#employment-status').val(),
-        //     'source': $('#provider').val(),
-        // };
-        // $.post('/mci/users', JSON.stringify(user)).done(function () {
-        //     alert('Done');
-        // }).fail(function (data) {
-        //     alert('Fail');
-        //     console.log(JSON.parse(data['responseText']));
-        // })
+        });
     });
 
     $('#service-referral').click(function (event) {
@@ -353,7 +307,6 @@ $(function () {
         const serviced_referral = {
             'serviced_date': $('#serviced-date').val()
         }
-        console.log(serviced_referral);
         $.post('/referrals/' + $('#referral-id').val(), JSON.stringify(serviced_referral)).done(function () {
             location.reload();
             alert('Done');
@@ -389,5 +342,12 @@ $(function () {
         }).catch(function () {
             alert('Failed to load JavaScript');
         });
+    });
+
+    $('#find-referral').click(function (event) {
+        event.preventDefault();
+        const mciID = $('#mci-id').val();
+        const url = '/referrals/query/' + mciID;
+        window.location.href = url;
     });
 });
