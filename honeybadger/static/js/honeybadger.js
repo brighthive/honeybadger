@@ -136,7 +136,6 @@ $(function () {
             initMCIForm().then(function (_) {
                 stopSpinner();
                 $('#mci-form-modal').modal('toggle');
-                console.log(data);
                 $('#mci-id').val(data['mci_id']);
                 $('#registration-date').val(data['registration_date']);
                 $('#vendor-id').val(data['vendor_id']);
@@ -158,7 +157,7 @@ $(function () {
                 $('#employment-status').val(data['employment_status'].length > 0 ? data['employment_status'] : ['Unknown']);
                 $('#provider').val(data['source'].length > 0 ? data['source'] : '');
             }).catch(function (_) {
-                console.log('Failed to load JavaScript.');
+                alert('Failed to load JavaScript');
             });
         });
     });
@@ -215,11 +214,17 @@ $(function () {
             'employment_status': $('#employment-status').val(),
             'source': $('#provider').val(),
         };
-        $.post('/mci/users', JSON.stringify(user)).done(function () {
-            alert('Done');
+        $.post('/mci/users', JSON.stringify(user)).done(function (response) {
+            response = JSON.parse(response);
+            if (response['match_probability'] !== undefined) {
+                alert(`Found an existing user with match probability of ${response['match_probability']}. Assigned MCI ID to current record.`);
+                $('#mci-id').val(response['mci_id']);
+            } else {
+                alert('Successfully created new MCI user');
+                $('#mci-id').val(response['mci_id']);
+            }
         }).fail(function (data) {
-            alert('Fail');
-            console.log(JSON.parse(data['responseText']));
+            alert('Failed to create new MCI user');
         });
     });
 
@@ -255,7 +260,7 @@ $(function () {
                 $('#referral-start-date').val(data['referral_start_date']);
                 $('#referral-end-date').val(data['referral_end_date']);
             }).catch(function (_) {
-                console.log('Failed to load JavaScript.');
+                alert('Failed to load JavaScript.');
             });
         });
     });
@@ -290,14 +295,12 @@ $(function () {
             }
             return referral;
         });
-        console.log(referral);
         $.post('/referrals/', JSON.stringify(referral)).done(function () {
             alert('Done');
             $('#referral-form-modal').modal('toggle');
             location.reload();
         }).fail(function (data) {
             alert('Fail');
-            console.log(JSON.parse(data['responseText']));
         });
     });
 
@@ -312,8 +315,38 @@ $(function () {
             alert('Done');
         }).fail(function (data) {
             alert('Fail');
-            console.log(JSON.parse(data['responseText']));
         })
+    });
+
+    $('#update-referral').click(function (event) {
+        event.preventDefault();
+        const referralForm = $('#referral-form');
+        let referral = {
+            'mci_id': $('#user-id').val(),
+            'referral_date': $('#referral-date').val(),
+            'program_id': parseInt($('#program').val()),
+            'source_provider_id': parseInt($('#source-provider').val()),
+            'destination_provider_id': parseInt($('#destination-provider').val()),
+            'recommended_date': $('#recommended-date').val(),
+            'accepted_date': $('#accepted-date').val(),
+            'completed_date': $('#completed-date').val(),
+            'serviced_date': $('#serviced-date').val(),
+            'referral_start_date': $('#referral-start-date').val(),
+            'referral_end_date': $('#referral-end-date').val()
+        }
+        $.each(referral, function (key, value) {
+            if (value === '' || value === null) {
+                delete referral[key];
+            }
+            return referral;
+        });
+        $.post('/referrals/' + + $('#referral-id').val(), JSON.stringify(referral)).done(function () {
+            alert('Successfully updated referral.');
+            $('#referral-form-modal').modal('toggle');
+            location.reload();
+        }).fail(function (data) {
+            alert('Failed to update referral');
+        });
     });
 
     $('#delete-referral').click(function (event) {

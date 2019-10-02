@@ -152,7 +152,6 @@ def add_user():
     query = '{}/users'.format(config.mci_url)
     if data['source'] == '':
         data['source'] = 'HoneyBadger'
-    print(data['education_level'])
     r = requests.post(query, headers=headers, data=json.dumps(data))
     if r.status_code == 200:
         return json.dumps(r.json()), r.status_code
