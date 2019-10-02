@@ -5,7 +5,6 @@ $(function () {
 
     setNavLink();
 
-
     try {
         appLoading = true;
         preloadMCIFormFields().then(function () {
@@ -15,7 +14,7 @@ $(function () {
             ;
         });
     } catch (e) {
-        alert('Error loading page.');
+        showNotice('Error', 'There was an error loading the page.');
     }
 
     try {
@@ -26,12 +25,21 @@ $(function () {
             ;
         });
     } catch (e) {
-        alert('Error loading page.');
+        showNotice('Error', 'There was an error loading the page.');
+    }
+
+    function showNotice(title, body) {
+        alert(body);
     }
 
     function setNavLink() {
         let path = location.pathname;
-        path = decodeURIComponent(path.replace(/\/$/, ''));
+        path = decodeURIComponent(path.replace(/\/$/, '')).split('/');
+        if (path.length == 1) {
+            path = '/';
+        } else {
+            path = `/${path[1]}`;
+        }
         $('.nav-link').removeClass('active');
         $('.nav-link').each(function () {
             let href = $(this).attr('href');
@@ -73,7 +81,7 @@ $(function () {
                 $('#mci-form').trigger('reset');
             });
             reject(function () {
-                alert('Cannot reset form.');
+                showNotice('Error', 'Failed to reset form.');
             });
         });
     }
@@ -84,7 +92,7 @@ $(function () {
                 $('#referral-form').trigger('reset');
             });
             reject(function () {
-                alert('Cannot reset form.');
+                showNotice('Error', 'Failed to reset form.');
             });
         });
     }
@@ -157,7 +165,7 @@ $(function () {
                 $('#employment-status').val(data['employment_status'].length > 0 ? data['employment_status'] : ['Unknown']);
                 $('#provider').val(data['source'].length > 0 ? data['source'] : '');
             }).catch(function (_) {
-                alert('Failed to load JavaScript');
+                showNotice('Error', 'Failed to load page.');
             });
         });
     });
@@ -217,14 +225,14 @@ $(function () {
         $.post('/mci/users', JSON.stringify(user)).done(function (response) {
             response = JSON.parse(response);
             if (response['match_probability'] !== undefined) {
-                alert(`Found an existing user with match probability of ${response['match_probability']}. Assigned MCI ID to current record.`);
+                showNotice('MCI Match', `Found an existing user with match probability of ${response['match_probability']}. Assigned MCI ID to current record.`);
                 $('#mci-id').val(response['mci_id']);
             } else {
-                alert('Successfully created new MCI user');
+                showNotice('User Created', 'Successfully created new MCI user.');
                 $('#mci-id').val(response['mci_id']);
             }
         }).fail(function (data) {
-            alert('Failed to create new MCI user');
+            showNotice('Error', 'Failed to create new MCI user.');
         });
     });
 
@@ -260,7 +268,7 @@ $(function () {
                 $('#referral-start-date').val(data['referral_start_date']);
                 $('#referral-end-date').val(data['referral_end_date']);
             }).catch(function (_) {
-                alert('Failed to load JavaScript.');
+                showNotice('Error', 'Failed to load page.');
             });
         });
     });
@@ -296,11 +304,11 @@ $(function () {
             return referral;
         });
         $.post('/referrals/', JSON.stringify(referral)).done(function () {
-            alert('Done');
+            showNotice('Referral Saved', 'Successfull saved referral.');
             $('#referral-form-modal').modal('toggle');
             location.reload();
         }).fail(function (data) {
-            alert('Fail');
+            showNotice('Error', 'Failed to save referral.');
         });
     });
 
@@ -312,9 +320,9 @@ $(function () {
         }
         $.post('/referrals/' + $('#referral-id').val(), JSON.stringify(serviced_referral)).done(function () {
             location.reload();
-            alert('Done');
+            showNotice('Successfult Serviced Referral', 'Successfully marked referral as serviced.');
         }).fail(function (data) {
-            alert('Fail');
+            showNotice('Error', 'Failed to mark referral as serviced.');
         })
     });
 
@@ -341,11 +349,11 @@ $(function () {
             return referral;
         });
         $.post('/referrals/' + + $('#referral-id').val(), JSON.stringify(referral)).done(function () {
-            alert('Successfully updated referral.');
+            showNotice('Updated Referral', 'Successfully updated referral.');
             $('#referral-form-modal').modal('toggle');
             location.reload();
         }).fail(function (data) {
-            alert('Failed to update referral');
+            showNotice('Error', 'Failed to update referral.');
         });
     });
 
@@ -356,9 +364,9 @@ $(function () {
             type: 'DELETE'
         }).done(function () {
             $('#referral-form-modal').modal('toggle');
-            alert('Done!');
+            showNotice('Deleted Referral', 'Successfully deleted referral.');
         }).fail(function () {
-            alert('Failed!');
+            showNotice('Error', 'Failed to delete referral.');
         });
     });
 
@@ -373,7 +381,7 @@ $(function () {
             $('#create-referral-buttons').show();
             $('#edit-referral-buttons').hide();
         }).catch(function () {
-            alert('Failed to load JavaScript');
+            showNotice('Error', 'Failed to load page.');
         });
     });
 
