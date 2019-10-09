@@ -88,17 +88,13 @@ def oauth2_callback_bh():
         r = requests.post(config.authserver_oauth2_url,
                           headers=headers, data=data)
         token = r.json()['access_token']
-        session['name'] = 'Some User'
+        headers = {'content-type': 'application/json',
+                   'authorization': 'bearer {}'.format(token)}
+        r = requests.get(config.authserver_profile_url, headers=headers)
+        user_details = r.json()
+        try:
+            session['name'] = '{} {}'.format(user_details['firstname'], user_details['lastname'])
+        except Exception:
+            session['name'] = 'Unknown'
         return redirect(url_for('home.index'))
-        # print(r.json())
-        # r = requests.post('http://localhost:8000/oauth/authorize',
-        #                   headers=headers, data=data)
-        # print(r.status_code)
-        # print(r.json())
-        # token = r.json()['access_token']
-        # headers = {'content-type': 'application/json',
-        #            'authorization': 'token {}'.format(token)}
-        # r = requests.get(config.github_profile_url, headers=headers)
-        # session['name'] = r.json()['name']
-        # return redirect(url_for('home.index'))
     return redirect(url_for('auth.login'))
