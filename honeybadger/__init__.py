@@ -7,6 +7,7 @@ from honeybadger.config import ConfigurationFactory
 
 
 def create_app():
+
     config = ConfigurationFactory.from_env()
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(

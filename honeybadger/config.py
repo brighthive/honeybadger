@@ -3,6 +3,10 @@
 import os
 import json
 
+from honeybadger.logger import logger
+
+logger = logger()
+
 
 class ConfigurationError(Exception):
     """Raise this error whenever issues with the configuration are detected."""
@@ -65,6 +69,8 @@ class Configuration(object):
                 data = json.load(f)
             return data
         except Exception:
+            logger.error(
+                'Failed to load configuration file {}. Please check the configuration file.'.format(config_file))
             raise ConfigurationError(
                 'Failed to load configuration file {}. Please check the configuration file.'.format(config_file))
 
@@ -105,9 +111,12 @@ class Configuration(object):
                 self.debug = True
                 self.testing = True
             except Exception:
+                logger.error(
+                    'Invalid key in JSON configuration. Please check the configuration.')
                 raise ConfigurationError(
                     'Invalid key in JSON configuration. Please check the configuration.')
         else:
+            logger.error('Cannot find environnent in JSON configuration.')
             raise ConfigurationError(
                 'Cannot find environment \'{}\' in JSON configuration.')
 
@@ -121,16 +130,29 @@ class Configuration(object):
 
         """
 
-        self.mci_url = os.getenv('MCI_URL')
-        self.data_resources_url = os.getenv('DATA_RESOURCE_URL')
-        self.client_id = os.getenv('CLIENT_ID')
-        self.client_secret = os.getenv('CLIENT_SECRET')
-        self.oauth2_url = os.getenv('OAUTH2_URL')
-        self.audience = os.getenv('AUDIENCE')
-        self.github_client_id = os.getenv('GITHUB_CLIENT_ID')
-        self.github_client_secret = os.getenv('GITHUB_CLIENT_SECRET')
-        self.github_oauth2_url = os.getenv('GITHUB_OAUTH2_URL')
-        self.github_profile_url = os.getenv('GITHUB_PROFILE_URL')
+        # Data Trust Data Resources
+        self.mci_url = os.getenv('MCI_URL', '')
+        self.data_resources_url = os.getenv('DATA_RESOURCE_URL', '')
+        self.client_id = os.getenv('CLIENT_ID', '')
+        self.client_secret = os.getenv('CLIENT_SECRET', '')
+        self.oauth2_url = os.getenv('OAUTH2_URL', '')
+        self.audience = os.getenv('AUDIENCE', '')
+
+        # Github
+        self.github_client_id = os.getenv('GITHUB_CLIENT_ID', '')
+        self.github_client_secret = os.getenv('GITHUB_CLIENT_SECRET', '')
+        self.github_oauth2_url = os.getenv('GITHUB_OAUTH2_URL', '')
+        self.github_profile_url = os.getenv('GITHUB_PROFILE_URL', '')
+
+        # Authserver
+        self.authserver_client_id = os.getenv('AUTHSERVER_CLIENT_ID', '')
+        self.authserver_client_secret = os.getenv(
+            'AUTHSERVER_CLIENT_SECRET', '')
+        self.authserver_oauth2_url = os.getenv('AUTHSERVER_OAUTH2_URL', '')
+        self.authserver_profile_url = os.getenv('AUTHSERVER_PROFILE_URL', '')
+        self.authserver_redirect_url = os.getenv('AUTHSERVER_REDIRECT_URL', '')
+
+        # Application environment
         self.environment = 'production'
 
 
@@ -209,7 +231,7 @@ class ConfigurationFactory(object):
 
         """
         environment = os.getenv('FLASK_ENV', 'development')
-        if environment.lower() == 'production':
-            return os.urandom(16)
-        else:
-            return 'supersecretaccesscode'
+        # if environment.lower() == 'production':
+        #     return os.urandom(16)
+        # else:
+        return b'supersecretaccesscode'

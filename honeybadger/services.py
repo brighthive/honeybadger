@@ -10,6 +10,10 @@ import requests
 import json
 
 from honeybadger.config import ConfigurationFactory
+from honeybadger.logger import logger
+
+
+logger = logger()
 
 
 def get_access_token():
@@ -44,17 +48,21 @@ def secure_get(url: str, key: str = None):
         None: If no results found.
 
     """
-    token = get_access_token()
-    headers = {'content-type': 'application/json',
-               'authorization': 'bearer {}'.format(token)}
-    r = requests.get(url, headers=headers)
-    if r.status_code == 200:
-        data = r.json()
-        if key:
-            return data[key]
+    try:
+        token = get_access_token()
+        headers = {'content-type': 'application/json',
+                   'authorization': 'bearer {}'.format(token)}
+        r = requests.get(url, headers=headers)
+        if r.status_code == 200:
+            data = r.json()
+            if key:
+                return data[key]
+            else:
+                return data
         else:
-            return data
-    else:
+            return None
+    except Exception:
+        logger.error('Failed to retrieve data.')
         return None
 
 

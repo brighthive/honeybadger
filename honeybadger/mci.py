@@ -5,10 +5,12 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from honeybadger.auth import get_access_token, login_required
 from honeybadger.services import secure_get
 from honeybadger.config import ConfigurationFactory
+from honeybadger.logger import logger
 
 
 bp = Blueprint('mci', __name__, url_prefix='/mci')
 config = ConfigurationFactory.from_env()
+logger = logger()
 
 
 @bp.route('/gender')
@@ -103,6 +105,7 @@ def index():
         else:
             user = None
     except Exception:
+        logger.warn('Could not calculate pagination')
         page_count = 0
         offset = 0
         limit = 0
@@ -121,6 +124,7 @@ def users(id: str):
     try:
         output = output.lower()
     except Exception:
+        logger.warn('Forcing output to HTML')
         output = 'html'
     headers = {'content-type': 'application/json',
                'authorization': 'bearer {}'.format(token)}

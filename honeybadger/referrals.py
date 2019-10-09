@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from honeybadger.auth import get_access_token, login_required
 from honeybadger.config import ConfigurationFactory
 from honeybadger.services import secure_get, secure_post, secure_patch, secure_delete
+from honeybadger.logger import logger
 
 
 bp = Blueprint('referrals', __name__, url_prefix='/referrals')
@@ -43,6 +44,7 @@ def index():
         if current_page == 1:
             last_offset = _offset
     except Exception:
+        logger.warn('Failed to compute pagination')
         last_offset = 0
         current_page = 0
         page_count = 0

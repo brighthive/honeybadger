@@ -1,0 +1,8 @@
+version: '3'
+services:
+  honeybadger:
+    image: 396527728813.dkr.ecr.us-east-2.amazonaws.com/brighthive/honeybadger:latest
+    ports:
+      - 8000:8000
+    environment: 
+      - FLASK_ENV=PRODUCTION

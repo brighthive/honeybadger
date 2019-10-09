@@ -5,10 +5,12 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from honeybadger.auth import get_access_token, login_required
 from honeybadger.mci import get_programs, get_providers, get_genders, get_ethnicities, get_education_level, get_employment_status
 from honeybadger.config import ConfigurationFactory
+from honeybadger.logger import logger
 
 
 bp = Blueprint('home', __name__, url_prefix='/')
 config = ConfigurationFactory.from_env()
+logger = logger()
 
 
 def compute_mci_records():
@@ -32,6 +34,7 @@ def compute_mci_records():
         total = (page_count * limit) + last_page
         return total
     except Exception:
+        logger.error('Failed to compute MCI records')
         return None
 
 
