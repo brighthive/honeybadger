@@ -15,7 +15,9 @@ class Configuration(object):
     __slots__ = ['mci_url', 'data_resources_url', 'client_id',
                  'client_secret', 'oauth2_url', 'audience', 'github_client_id',
                  'github_client_secret', 'github_oauth2_url', 'github_profile_url',
-                 'environment', 'debug', 'testing']
+                 'authserver_client_id', 'authserver_client_secret', 'authserver_oauth2_url',
+                 'authserver_profile_url', 'authserver_redirect_url', 'environment', 'debug',
+                 'testing']
 
     def find_json_config_file(self):
         """Find JSON configuration file.
@@ -92,6 +94,13 @@ class Configuration(object):
                 self.github_client_secret = fields['github']['client_secret']
                 self.github_oauth2_url = fields['github']['oauth2_url']
                 self.github_profile_url = fields['github']['profile_url']
+
+                self.authserver_client_id = fields['authserver']['client_id']
+                self.authserver_client_secret = fields['authserver']['client_secret']
+                self.authserver_oauth2_url = fields['authserver']['oauth2_url']
+                self.authserver_profile_url = fields['authserver']['profile_url']
+                self.authserver_redirect_url = fields['authserver']['redirect_url']
+
                 self.environment = environment
                 self.debug = True
                 self.testing = True

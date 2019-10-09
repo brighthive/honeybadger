@@ -70,3 +70,35 @@ def oauth2_callback():
         session['name'] = r.json()['name']
         return redirect(url_for('home.index'))
     return redirect(url_for('auth.login'))
+
+
+@bp.route('/redirect')
+def oauth2_callback_bh():
+    code = request.args.get('code')
+    scope = request.args.get('scope')
+    config = ConfigurationFactory.from_env()
+    if code:
+        data = {'client_id': config.authserver_client_id,
+                'grant_type': 'authorization_code',
+                'code': code,
+                'scope': scope,
+                'redirect_uri': config.authserver_redirect_url}
+        headers = {'content-type': 'application/x-www-form-urlencoded',
+                   'accept': 'application/json'}
+        r = requests.post(config.authserver_oauth2_url,
+                          headers=headers, data=data)
+        token = r.json()['access_token']
+        session['name'] = 'Some User'
+        return redirect(url_for('home.index'))
+        # print(r.json())
+        # r = requests.post('http://localhost:8000/oauth/authorize',
+        #                   headers=headers, data=data)
+        # print(r.status_code)
+        # print(r.json())
+        # token = r.json()['access_token']
+        # headers = {'content-type': 'application/json',
+        #            'authorization': 'token {}'.format(token)}
+        # r = requests.get(config.github_profile_url, headers=headers)
+        # session['name'] = r.json()['name']
+        # return redirect(url_for('home.index'))
+    return redirect(url_for('auth.login'))

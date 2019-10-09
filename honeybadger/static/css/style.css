@@ -72,3 +72,23 @@ body {
 
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+/**
+* Icon Button
+*/
+
+.btn-image :before {
+  content: "";
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: text-top;
+  background-color: transparent;
+  background-position : top center;
+  background-repeat:no-repeat;
+}
+
+.bh-icon :before{
+    background-image : url(/static/images/logo_small.png);
+}
