@@ -12,3 +12,4 @@
 
 # pytest artifacts
 **/.pytest_cache
+**/push.sh

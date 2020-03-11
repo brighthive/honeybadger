@@ -136,6 +136,7 @@ def oauth2_callback_bh():
                           headers=headers, data=data)
         # print(r.json())
         logger.info(r.json())
+        print(r.json())
         token = r.json()['access_token']
         headers = {'content-type': 'application/json',
                    'authorization': 'bearer {}'.format(token)}
